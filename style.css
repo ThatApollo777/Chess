@@ -1,0 +1,57 @@
+body {
+    background-color: #312E2B;
+}
+td {
+    height: 60px;
+    width: 60px;
+    color: #e2dcd1;
+    text-align: center;
+}
+.light {
+    background-color: #EEEED2;
+}
+.dark {
+    background-color: #769656;
+}
+.current {
+    background-color: #BACB2B;
+}
+.move {
+    opacity: 60%;
+}
+.pl {
+    background-image: url("Assets/Chess_pl.png");
+}
+.pd {
+    background-image: url("Assets/Chess_pd.png");
+}
+.nl {
+    background-image: url("Assets/Chess_nl.png");
+}
+.nd {
+    background-image: url("Assets/Chess_nd.png");
+}
+.bl {
+    background-image: url("Assets/Chess_bl.png");
+}
+.bd {
+    background-image: url("Assets/Chess_bd.png");
+}
+.rl {
+    background-image: url("Assets/Chess_rl.png");
+}
+.rd {
+    background-image: url("Assets/Chess_rd.png");
+}
+.ql {
+    background-image: url("Assets/Chess_ql.png");
+}
+.qd {
+    background-image: url("Assets/Chess_qd.png");
+}
+.kl {
+    background-image: url("Assets/Chess_kl.png");
+}
+.kd {
+    background-image: url("Assets/Chess_kd.png");
+}
