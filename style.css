@@ -55,3 +55,9 @@ td {
 .kd {
     background-image: url("Assets/Chess_kd.png");
 }
+td[name="prevMove"] {
+    background-color: #d5e070;
+}
+.move.pl, .move.pd, .move.nl, .move.nd, .move.bl, .move.bd, .move.rl, .move.rd, .move.ql, .move.qd {
+    background-color: #cc2525;
+}

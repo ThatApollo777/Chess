@@ -8,8 +8,9 @@ $(document).ready(function () {
     $('td').click(function(){
         let clicked = $(this).attr('class').split(' ');
         if (clicked.includes('move')) {
-            $('.'+current[0]+'.'+current[1]).removeClass(current[3]);
-            $('.'+clicked[0]+'.'+clicked[1]).removeClass(clicked[3]).addClass(current[3]);
+            $('td[name="prevMove"]').attr('name','');
+            $('.'+current[0]+'.'+current[1]).removeClass(current[3]).attr('name','prevMove');
+            $('.'+clicked[0]+'.'+clicked[1]).removeClass(clicked[3]).addClass(current[3]).attr('name','prevMove');
             clicked=[];
             move = move==='l'?'d':'l';
         }
@@ -182,7 +183,14 @@ function availableMoves(piece) {
         }
     }
     if (piece==='p') {
-        
+        let check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?current[1]==='two'?2:1:current[1]==='seven'?-2:-1));
+        if (check.attr('class').split(' ').length <= 3) {
+            check.addClass('move');
+        }
+        check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?1:-1));
+        if (check.attr('class').split(' ').length <= 3) {
+            check.addClass('move');
+        }
     }
     if (!$('.move').length) {
         $('.current').removeClass('current');
