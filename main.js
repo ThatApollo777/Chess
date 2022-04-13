@@ -2,8 +2,14 @@
 let current = [];
 let move = 'l';
 const LIST = [['a','b','c','d','e','f','g','h'],['one','two','three','four','five','six','seven','eight']];
-const KNIGHTMOVE = [[1,2],[-1,2],[1,-2],[-1,-2],[2,1],[-2,1],[2,-1],[-2,-1]];
-const KINGSMOVE = [[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]]
+const MOVE = {
+ 'n':[false,[[2,1]]],
+ 'b':[true,[[1,1]]],
+ 'r':[true,[[1,0]]],
+ 'q':[true,[[1,1],[1,0]]],
+ 'k':[false,[[1,1],[1,0]]],
+ 'p':[false,[[0,0]]]
+};
 $(document).ready(function () {
     $('td').click(function(){
         let clicked = $(this).attr('class').split(' ');
@@ -26,175 +32,54 @@ $(document).ready(function () {
     });
 });
 function availableMoves(piece) {
-    if (piece==='k') {
-        for(let i = 0; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],KINGSMOVE[i][0],KINGSMOVE[i][1]);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                if (possible.attr('class').split(' ')[3].charAt(1) === move) {
-                    possible.removeClass('move');
-                }
-            }
-        }
-    }
-    if (piece==='r' || piece==='q') {
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],i,0);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],0,i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
+    let target = MOVE[piece];
+    for (let i in target[1]) {
+        for (let x=0;x<=7;x++) {
+            let bin = ('00'+(x >>> 0).toString(2)).slice(-3).split('');
+            let direction = [
+                target[1][i][bin[0]]*(bin[1]==1?1:-1),
+                target[1][i][1-bin[0]]*(bin[2]==1?1:-1)
+            ]
+            let y =1;
+            do {
+                let check = coords('.'+current[0]+'.'+current[1],y*direction[0],y*direction[1]);
+                if (check) {
+                    let possible = $(check);
+                    possible.addClass('move');
+                    let end = possible.attr('class').split(' ')[3].charAt(1);
+                    if (end === move) {
+                        possible.removeClass('move');
+                        break;
+                    } else if (end === 'l' || end === 'd') {
+                        break;
+                    }
+                } else {
                     break;
                 }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],-i,0);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],0,-i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
-    if (piece==='b' || piece==='q') {
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],i,i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],i,-i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],-i,i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        for(let i = 1; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],-i,-i);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                let end = possible.attr('class').split(' ')[3].charAt(1);
-                if (end === move) {
-                    possible.removeClass('move');
-                    break;
-                } else if (end === 'l' || end === 'd') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
-    if (piece==='n') {
-        for(let i = 0; i <= 7;i++){
-            let check = coords('.'+current[0]+'.'+current[1],KNIGHTMOVE[i][0],KNIGHTMOVE[i][1]);
-            if (check) {
-                let possible = $(check);
-                possible.addClass('move');
-                if (possible.attr('class').split(' ')[3].charAt(1) === move) {
-                    possible.removeClass('move');
-                }
-            }
+                y++;
+            } while(target[0])
         }
     }
     if (piece==='p') {
-        let check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?current[1]==='two'?2:1:current[1]==='seven'?-2:-1));
+        let check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?1:-1));
         if (check.attr('class').split(' ').length <= 3) {
             check.addClass('move');
+            check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?current[1]==='two'?2:1:current[1]==='seven'?-2:-1));
+            if (check.attr('class').split(' ').length <= 3) {
+                check.addClass('move');
+            }
         }
-        check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?1:-1));
-        if (check.attr('class').split(' ').length <= 3) {
-            check.addClass('move');
+        for (let i=-1;i<=1;i=i+2) {
+            check = $(coords('.'+current[0]+'.'+current[1],i,move==='l'?1:-1));
+            if (check) {
+                let classes = check.attr('class').split(' ');
+                if (classes.length > 3) {
+                    if (classes[3].charAt(1) != move) {
+                        check.addClass('move');
+                    }
+                }
+            }
         }
-    }
-    if (!$('.move').length) {
-        $('.current').removeClass('current');
-        current = [];
     }
 }
 function coords (coords, xOff, yOff) {
