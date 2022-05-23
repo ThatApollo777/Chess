@@ -2,6 +2,10 @@
 let current = [];
 let move = 'l';
 let promotion = false;
+let castle = {
+    'l':[true,[true,true]],
+    'd':[true,[true,true]]
+};
 const LIST = [['a','b','c','d','e','f','g','h'],['one','two','three','four','five','six','seven','eight']];
 const MOVE = {
  'n':[false,[[2,1]]],
@@ -31,6 +35,31 @@ $(document).ready(function () {
                     promote(clicked);
                 }
                 $('.'+clicked[0]+'.'+clicked[1]).removeClass(clicked[3]).addClass(current[3]).attr('name','prevMove');
+                if (current[3].charAt(0)==='k') {
+                    if (castle[move][0]) {
+                        let rank = move==='l'?'one':'eight';
+                        if (clicked.includes('g')) {
+                            $('.h.'+rank).removeClass('r'+move);
+                            $('.f.'+rank).addClass('r'+move);
+                        }
+                        if (clicked.includes('c')) {
+                            $('.a.'+rank).removeClass('r'+move);
+                            $('.d.'+rank).addClass('r'+move);
+                        }
+                    }
+                }
+                switch (current[3].charAt(0)) {
+                    case 'k':
+                        castle[move][0] = false;
+                        break;
+                    case 'r':
+                        if (current[0]==='h' && ((current[1]==="one" && move==='l')||(current[1]==="eight" && move==='d'))) {
+                            castle[move][1][0] = false;
+                        } else if (current[0]==='a' && ((current[1]==="one" && move==='l')||(current[1]==="eight" && move==='d'))) {
+                            castle[move][1][1] = false;
+                        }
+                        break;
+                }
                 clicked=[];
                 move = move==='l'?'d':'l';
             }
@@ -47,6 +76,49 @@ $(document).ready(function () {
     });
 });
 function availableMoves(piece) {
+    if (piece==='p') {
+        let check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?1:-1));
+        if (check.attr('class').split(' ').length <= 3) {
+            check.addClass('move');
+            check = coords('.'+current[0]+'.'+current[1],0,current[1]==='two'||current[1]==='seven'?move==='l'?2:-2:0);
+            if (check) {
+                check = $(check);
+                if (check.attr('class').split(' ').length <= 3) {
+                    check.addClass('move');
+                }
+            }
+        }
+        for (let i=-1;i<=1;i=i+2) {
+            check = coords('.'+current[0]+'.'+current[1],i,move==='l'?1:-1);
+            if (check) {
+                check = $(check);
+                let classes = check.attr('class').split(' ');
+                if (classes.length > 3) {
+                    if (classes[3].charAt(1) != move) {
+                        check.addClass('move');
+                    }
+                }
+            }
+        }
+    }
+    if (piece==='k') {
+        if (castle.l[0] && move==='l') {
+            if (castle.l[1][0] && $('.f.one').attr('class').split(' ').length===3 && $('.g.one').attr('class').split(' ').length===3) {
+                $('.g.one').addClass('move')
+            }
+            if (castle.l[1][1]  && $('.d.one').attr('class').split(' ').length===3 && $('.c.one').attr('class').split(' ').length===3 && $('.b.one').attr('class').split(' ').length===3) {
+                $('.c.one').addClass('move')
+            }
+        }
+        if (castle.d[0] && move==='d') {
+            if (castle.d[1][0] && $('.f.eight').attr('class').split(' ').length===3 && $('.g.eight').attr('class').split(' ').length===3) {
+                $('.g.eight').addClass('move')
+            }
+            if (castle.d[1][1]  && $('.d.eight').attr('class').split(' ').length===3 && $('.c.eight').attr('class').split(' ').length===3 && $('.b.eight').attr('class').split(' ').length===3) {
+                $('.c.eight').addClass('move')
+            }
+        }
+    }
     let target = MOVE[piece];
     for (let i in target[1]) {
         for (let x=0;x<=7;x++) {
@@ -73,28 +145,6 @@ function availableMoves(piece) {
                 }
                 y++;
             } while(target[0])
-        }
-    }
-    if (piece==='p') {
-        let check = $(coords('.'+current[0]+'.'+current[1],0,move==='l'?1:-1));
-        if (check.attr('class').split(' ').length <= 3) {
-            check.addClass('move');
-            check = $(coords('.'+current[0]+'.'+current[1],0,current[1]==='two'||current[1]==='seven'?move==='l'?2:-2:0));
-            if (check.attr('class').split(' ').length <= 3) {
-                check.addClass('move');
-            }
-        }
-        for (let i=-1;i<=1;i=i+2) {
-            check = coords('.'+current[0]+'.'+current[1],i,move==='l'?1:-1);
-            if (check) {
-                check = $(check);
-                let classes = check.attr('class').split(' ');
-                if (classes.length > 3) {
-                    if (classes[3].charAt(1) != move) {
-                        check.addClass('move');
-                    }
-                }
-            }
         }
     }
 }
